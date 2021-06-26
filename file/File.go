@@ -3,6 +3,7 @@ package file
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -12,17 +13,27 @@ type File struct {
 	Name string
 }
 
+func (f File) Delete() bool {
+	err := os.Remove(f.Name)
+	if err != nil {
+		return false
+	}
+
+	return true
+}
+
 func (f File) Create() bool {
 	return createFile(f.Name)
 }
 
 func (f File) IsExist() bool {
+	fmt.Println(f.Name)
 	return existsFile(f.Name)
 }
 
 func (f *File) Clear() (*File, error) {
 	file, err := os.OpenFile(f.Name, os.O_WRONLY, os.ModePerm)
-	
+
 	if err != nil {
 		return f, err
 	}
@@ -35,12 +46,12 @@ func (f *File) Clear() (*File, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	err = file.Close()
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return f, err
 }
 
@@ -61,7 +72,7 @@ func (f *File) AppendNewLine(content string) (*File, error) {
 }
 
 func writeNlFile(name string, str string) error {
-	return writeFile(name, str + "\n")
+	return writeFile(name, str+"\n")
 }
 
 func (f File) Read() ([]byte, error) {
@@ -69,7 +80,7 @@ func (f File) Read() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return ioutil.ReadFile(f.Name)
 }
 
@@ -78,9 +89,9 @@ func (f File) ReadByLine(function func(str string)) error {
 	if err != nil {
 		return err
 	}
-	
+
 	file, _ := os.Open(f.Name)
-	
+
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		function(scanner.Text())
@@ -89,7 +100,7 @@ func (f File) ReadByLine(function func(str string)) error {
 	if err != nil {
 		return err
 	}
-	
+
 	return scanner.Err()
 }
 
@@ -104,7 +115,7 @@ func readLines(path string) ([]string, error) {
 	}
 	defer file.Close()
 	var lines []string
-	
+
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
@@ -118,55 +129,55 @@ func writeFile(name string, str string) error {
 	if err != nil {
 		return err
 	}
-	
+
 	file, err := os.OpenFile(name, os.O_WRONLY, os.ModePerm)
-	
+
 	if err != nil {
 		return err
 	}
-	
+
 	defer file.Close()
 	file.Seek(0, io.SeekStart)
 	file.Truncate(0)
 	_, err = file.WriteString(str)
-	
+
 	file.Close()
 	if err != nil {
 		return err
 	}
-	
+
 	return nil
 }
 
 func appendNLFile(name string, str string) error {
-	return appendFile(name, str + "\n")
+	return appendFile(name, str+"\n")
 }
 
 func appendFile(name string, str string) error {
 	err := createIfNotExist(name)
-	
+
 	if err != nil {
 		return err
 	}
-	
+
 	file, err := os.OpenFile(name, os.O_APPEND, os.ModeAppend)
-	
+
 	if err != nil {
 		return err
 	}
-	
+
 	defer file.Close()
-	
+
 	_, err = file.Write([]byte(str))
 	if err != nil {
 		return err
 	}
-	
+
 	err = file.Close()
 	if err != nil {
 		return err
 	}
-	
+
 	return nil
 }
 
@@ -176,7 +187,7 @@ func createIfNotExist(name string) error {
 			return errors.New("File not created.")
 		}
 	}
-	
+
 	return nil
 }
 
@@ -185,12 +196,12 @@ func createFile(fileName string) bool {
 	if err != nil {
 		return false
 	}
-	
+
 	err = file.Close()
 	if err != nil {
 		return false
 	}
-	
+
 	return true
 }
 
@@ -200,6 +211,6 @@ func existsFile(name string) bool {
 			return false
 		}
 	}
-	
+
 	return true
 }
