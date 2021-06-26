@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	file2 "fileHelp/file"
+	fileB "fileHelp/file"
 )
 
 const CACHE_SEP = "|"
@@ -41,7 +41,7 @@ func createFileDir(key string) string {
 }
 
 func (file CacheFile) Set() error {
-	cacheF := file2.File{Name: createFileDir(file.Key)}
+	cacheF := fileB.File{Name: createFileDir(file.Key)}
 	pref := "0"
 	if file.TLL != 0 {
 		pref = strconv.FormatInt(time.Now().Add(file.TLL).Unix(), 10)
@@ -61,7 +61,7 @@ func parseString(val string) (bool, string) {
 }
 
 func Get(key string) (bool, string) {
-	cacheF := file2.File{Name: createFileDir(key)}
+	cacheF := fileB.File{Name: createFileDir(key)}
 	if !cacheF.IsExist() {
 		return false, ""
 	}
@@ -84,4 +84,9 @@ func Get(key string) (bool, string) {
 	cacheF.Delete()
 
 	return false, ""
+}
+
+func Flush(key string) {
+	cacheF := fileB.File{Name: createFileDir(key)}
+	cacheF.Delete()
 }
