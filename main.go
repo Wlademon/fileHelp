@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"fileHelp/file/cache"
 )
 
 func main() {
 	cache.InitCache("cache")
-	err := cache.CreateForever("TEST", "Hello world!").Set()
+	err := cache.Create("TEST", "Hello world!", time.Hour).Set()
 	if err != nil {
-		return
+		fmt.Println(err)
 	}
 	exist, value := cache.Get("TEST")
 	if exist {
@@ -18,5 +19,5 @@ func main() {
 	} else {
 		fmt.Println("Error")
 	}
-	cache.Flush("TEST")
+	// cache.Flush("TEST")
 }

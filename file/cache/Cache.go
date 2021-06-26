@@ -78,7 +78,7 @@ func Get(key string) (bool, string) {
 	if err != nil {
 		return false, ""
 	}
-	if parseInt < time.Now().Unix() {
+	if parseInt >= time.Now().Unix() {
 		return parseString(durVal[1])
 	}
 	cacheF.Delete()
