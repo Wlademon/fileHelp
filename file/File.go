@@ -3,7 +3,6 @@ package file
 import (
 	"bufio"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -27,7 +26,6 @@ func (f File) Create() bool {
 }
 
 func (f File) IsExist() bool {
-	fmt.Println(f.Name)
 	return existsFile(f.Name)
 }
 
